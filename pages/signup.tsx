@@ -3,15 +3,19 @@ import { Form, Input, Checkbox, Button } from "antd";
 import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { RootState } from "../reducers";
 
 const ErrorMessage = styled.div`
   color: red;
 `;
 
 const Signup = () => {
-  const [id, onChangeId] = useInput("");
+  const [email, onChangeEmail] = useInput("");
   const [nickname, onChangeNickname] = useInput("");
   const [password, onChangePassword] = useInput("");
+
+  const { signUpLoading } = useSelector((state: RootState) => state.user);
 
   const [passwordCheck, setPasswordCheck] = useState("");
   const [passwordError, setPasswordError] = useState(false);
@@ -36,7 +40,7 @@ const Signup = () => {
     if (!term) {
       return setTermError(true);
     }
-    console.log(id, nickname, password);
+    console.log(email, nickname, password);
   }, [password, passwordCheck, term]);
 
   return (
@@ -44,9 +48,9 @@ const Signup = () => {
       <div>Sign up page</div>
       <Form onFinish={onSumbmit}>
         <div>
-          <label htmlFor="user-id">ID</label>
+          <label htmlFor="user-email">email</label>
           <br />
-          <Input name="user-id" value={id} required onChange={onChangeId} />
+          <Input name="user-email" type="email" value={email} required onChange={onChangeEmail} />
         </div>
         <div>
           <label htmlFor="user-nickname">Nickname</label>
@@ -59,7 +63,7 @@ const Signup = () => {
           <Input name="user-password" type="password" value={password} required onChange={onChangePassword} />
         </div>
         <div>
-          <label htmlFor="user-id">Password Check</label>
+          <label htmlFor="user-email">Password Check</label>
           <br />
           <Input name="user-password-check" type="password" value={passwordCheck} required onChange={onChangePasswordCheck} />
           {passwordError && <ErrorMessage style={{ color: "red" }}> 비밀번호가 일치하지 않습니다. </ErrorMessage>}
@@ -71,7 +75,7 @@ const Signup = () => {
           {termError && <ErrorMessage style={{ color: "red" }}>Agree </ErrorMessage>}
         </div>
         <div style={{ marginTop: 10 }}>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={signUpLoading}>
             SignIn
           </Button>
         </div>

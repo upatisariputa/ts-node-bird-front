@@ -1,23 +1,19 @@
+import { useSelector } from "react-redux";
+import { meProps } from "../@types";
 import AppLayout from "../components/AppLayout";
 import FollowList from "../components/FollowList";
 import NicknameEditForm from "../components/NicknameEditForm";
-
-type followList = Array<followListProps>;
-
-interface followListProps {
-  nickname: string;
-}
+import { RootState } from "../reducers";
 
 const Profile = () => {
-  const followingList: followList = [{ nickname: "upati" }, { nickname: "sitarua" }, { nickname: "ananda" }];
-  const followerList: followList = [{ nickname: "upati" }, { nickname: "sitarua" }, { nickname: "ananda" }];
+  const me: meProps = useSelector((state: RootState) => state.user.me);
 
   return (
     <>
       <AppLayout>
         <NicknameEditForm />
-        <FollowList header="following List" data={followingList} />
-        <FollowList header="follower List" data={followerList} />
+        <FollowList header="following List" data={me.Followings} />
+        <FollowList header="follower List" data={me.Followers} />
       </AppLayout>
     </>
   );

@@ -5,8 +5,31 @@ export interface postProps {
     id: number;
     nickname: string;
   };
-  Images: [];
-  Commnets: [];
+  Images: any[];
+  Commnets: any[];
+}
+
+export interface userInitialStateProps {
+  logInLoading: boolean;
+  logInDone: boolean;
+  logInError: object | null;
+  logOutLoading: boolean;
+  logOutDone: boolean;
+  logOutError: object | null;
+  signUpLoading: boolean;
+  signUpDone: boolean;
+  signUpError: object | null;
+  me: meProps | null;
+  signUpData: {};
+  logInData: {};
 }
 
 export type ImagePostProps = { src: string }[];
+
+export interface meProps {
+  nickname: string;
+  id: number;
+  Posts: any[];
+  Followings: any[];
+  Followers: any[];
+}

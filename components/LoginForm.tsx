@@ -1,11 +1,12 @@
 import React, { useState, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Form, Input, Button } from "antd";
 import Link from "next/link";
 import styled from "styled-components";
 
 import useInput from "../hooks/useInput";
-import { loginAction } from "../reducers/user";
+import { loginRequestAction } from "../reducers/user";
+import { RootState } from "../reducers";
 
 const ButtonWrapper = styled.div`
   margin-top: 10px;
@@ -17,24 +18,21 @@ const FormWrapper = styled(Form)`
 
 const LoginForm = () => {
   const dispatch = useDispatch();
-
-  const [id, onChangeId] = useInput("");
+  const { logInLoading } = useSelector((state: RootState) => state.user);
+  const [email, onChangeEmail] = useInput("");
   const [password, onChangePassword] = useInput("");
 
-  const onSubmitForm = useCallback(
-    (e) => {
-      console.log(id, password);
-      dispatch(loginAction({ id, password }));
-    },
-    [id, password]
-  );
+  const onSubmitForm = useCallback(() => {
+    console.log(email, password);
+    dispatch(loginRequestAction({ email, password }));
+  }, [email, password]);
 
   return (
     <FormWrapper onFinish={onSubmitForm}>
       <div>
-        <label htmlFor="user-id">ID</label>
+        <label htmlFor="user-email">Email</label>
         <br />
-        <Input name="user-id" value={id} onChange={onChangeId} required></Input>
+        <Input name="user-email" type="email" value={email} onChange={onChangeEmail} required></Input>
       </div>
       <div>
         <label htmlFor="user-password">Password</label>
@@ -42,7 +40,7 @@ const LoginForm = () => {
         <Input name="user-password" type="password" value={password} onChange={onChangePassword} required></Input>
       </div>
       <ButtonWrapper>
-        <Button type="primary" htmlType="submit" loading={false}>
+        <Button type="primary" htmlType="submit" loading={logInLoading}>
           Login
         </Button>
         <Link href="/signup">
