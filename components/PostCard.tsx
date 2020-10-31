@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { Card, Popover, Button, Avatar, List, Comment } from "antd";
 import { EllipsisOutlined, HeartOutlined, HeartTwoTone, MessageOutlined, RetweetOutlined } from "@ant-design/icons";
@@ -10,8 +10,11 @@ import PostImages from "../components/PostImages";
 import CommentForm from "../components/CommentForm";
 import PostCardContents from "../components/PostCardContents";
 import { postProps } from "../@types";
+import { REMOVE_POST_REQUEST } from "../reducers/post";
 
-const PostCard = ({ post }: { post: postProps }) => {
+const PostCard = ({ post }) => {
+  const dispatch = useDispatch();
+  const { removePostLoading } = useSelector((state: RootState) => state.post);
   const [liked, setLiked] = useState(false);
   const [commentFormOpend, setCommentFormOpend] = useState(false);
 
@@ -25,6 +28,13 @@ const PostCard = ({ post }: { post: postProps }) => {
 
   const id = useSelector((state: RootState) => state.user.me?.id);
 
+  const onRemovePost = useCallback(() => {
+    dispatch({
+      type: REMOVE_POST_REQUEST,
+      data: post.id,
+    });
+  }, [post]);
+
   return (
     <div style={{ marginBottom: 10 }}>
       <Card
@@ -37,10 +47,13 @@ const PostCard = ({ post }: { post: postProps }) => {
             key="more"
             content={
               <Button.Group>
+                {console.log("포스트카드 유저아이디", post.User.id)}
                 {id && post.User.id === id ? (
                   <>
                     <Button>Edit</Button>
-                    <Button type="dashed">Delete</Button>
+                    <Button danger type="primary" onClick={onRemovePost} loading={removePostLoading}>
+                      Delete
+                    </Button>
                   </>
                 ) : (
                   <Button>report</Button>
@@ -50,15 +63,16 @@ const PostCard = ({ post }: { post: postProps }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}>
+        {console.log("포스트", post)}
         <Card.Meta avatar={<Avatar>{post.User.nickname}</Avatar>} title={post.User.nickname} description={<PostCardContents postData={post.content} />} />
       </Card>
       {commentFormOpend && (
         <div>
           <CommentForm post={post} />
           <List
-            header={`${post.Commnets.length} of comments`}
+            header={`${post.Comments.length} of comments`}
             itemLayout="horizontal"
-            dataSource={post.Commnets}
+            dataSource={post.Comments}
             renderItem={(item: postProps) => (
               <li>
                 <Comment author={item.User.nickname} avatar={<Avatar>{item.User.nickname[0]}</Avatar>} content={item.content} />

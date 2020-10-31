@@ -1,4 +1,5 @@
 import { meProps, userInitialStateProps } from "../@types";
+import shortId from "shortid";
 
 export const initialState: userInitialStateProps = {
   logInLoading: false,
@@ -10,6 +11,9 @@ export const initialState: userInitialStateProps = {
   signUpLoading: false,
   signUpDone: false,
   signUpError: null,
+  changeNicknameLoading: false,
+  changeNicknameDone: false,
+  changeNicknameError: null,
   me: null,
   signUpData: {},
   logInData: {},
@@ -27,6 +31,10 @@ export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
 
+export const CHANGE_NICKNAME_REQUEST = "CHANGE_NICKNAME_REQUEST";
+export const CHANGE_NICKNAME_SUCCESS = "CHANGE_NICKNAME_SUCCESS";
+export const CHANGE_NICKNAME_FAILURE = "CHANGE_NICKNAME_FAILURE";
+
 export const FOLLOW_REQUEST = "FOLLOW_REQUEST";
 export const FOLLOW_SUCCESS = "FOLLOW_SUCCESS";
 export const FOLLOW_FAILURE = "FOLLOW_FAILURE";
@@ -35,13 +43,16 @@ export const UN_FOLLOW_REQUEST = "UN_FOLLOW_REQUEST";
 export const UN_FOLLOW_SUCCESS = "UN_FOLLOW_SUCCESS";
 export const UN_FOLLOW_FAILURE = "UN_FOLLOW_FAILURE";
 
+export const ADD_POST_TO_ME = "ADD_POST_TO_ME";
+export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME";
+
 const dummyUser = (data: any): meProps => ({
   ...data,
-  nickname: "upa",
+  nickname: "mina",
   id: 1,
-  Posts: [],
-  Follwings: [],
-  Follwers: [],
+  Posts: [{ id: 1 }],
+  Followings: [{ nickname: "minju" }, { nickname: "arin" }, { nickname: "sana" }],
+  Followers: [{ nickname: "minju" }, { nickname: "arin" }, { nickname: "sana" }],
 });
 
 export const loginRequestAction = (data: { email: string; password: string }) => {
@@ -58,6 +69,7 @@ export const logoutReqeustAction = () => {
 };
 
 const reducer = (state: userInitialStateProps = initialState, action) => {
+  console.log("유저 리듀서 액션", action);
   switch (action.type) {
     // 로그인
     case LOG_IN_REQUEST:
@@ -102,6 +114,27 @@ const reducer = (state: userInitialStateProps = initialState, action) => {
         logOutLoading: false,
         logOutError: action.error,
       };
+    // 닉넴 변경
+    case CHANGE_NICKNAME_REQUEST:
+      return {
+        ...state,
+        changeNicknameLoading: true,
+        changeNicknameDone: false,
+        changeNicknameError: null,
+      };
+    case CHANGE_NICKNAME_SUCCESS:
+      return {
+        ...state,
+        changeNicknameLoading: false,
+        changeNicknameDone: true,
+        me: null,
+      };
+    case CHANGE_NICKNAME_FAILURE:
+      return {
+        ...state,
+        changeNicknameLoading: false,
+        changeNicknameError: action.error,
+      };
     // 사인업
     case SIGN_UP_REQUEST:
       return {
@@ -121,6 +154,23 @@ const reducer = (state: userInitialStateProps = initialState, action) => {
         ...state,
         signUpLoading: false,
         signUpError: action.error,
+      };
+    // 포스트 투미
+    case ADD_POST_TO_ME:
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          Posts: [{ id: action.data }, ...state.me.Posts],
+        },
+      };
+    case REMOVE_POST_OF_ME:
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          Posts: state.me.Posts.filter((v) => v.id !== action.data),
+        },
       };
     default:
       return state;

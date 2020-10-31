@@ -6,7 +6,7 @@ export interface postProps {
     nickname: string;
   };
   Images: any[];
-  Commnets: any[];
+  Comments: any[];
 }
 
 export interface userInitialStateProps {
@@ -20,6 +20,9 @@ export interface userInitialStateProps {
   signUpDone: boolean;
   signUpError: object | null;
   me: meProps | null;
+  changeNicknameLoading: boolean;
+  changeNicknameDone: boolean;
+  changeNicknameError: object | null;
   signUpData: {};
   logInData: {};
 }

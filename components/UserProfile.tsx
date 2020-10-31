@@ -12,6 +12,7 @@ const UserProfile = () => {
     dispatch(logoutReqeustAction());
   }, []);
 
+  console.log("미", me);
   return (
     <Card
       actions={[
@@ -20,15 +21,15 @@ const UserProfile = () => {
           <br /> {me.Posts.length}
         </div>,
         <div key="followings">
-          Follwing
+          Following
           <br /> {me.Followings.length}
         </div>,
         <div key="followers">
-          Follwers
+          Followers
           <br /> {me.Followers.length}
         </div>,
       ]}>
-      <Card.Meta avatar={<Avatar>US</Avatar>} title="Upatisariputa" />
+      <Card.Meta avatar={<Avatar>Mina</Avatar>} title="Mina" />
       <Button onClick={onLogOut}>LogOut</Button>
     </Card>
   );
