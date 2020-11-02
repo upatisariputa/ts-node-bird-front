@@ -9,13 +9,11 @@ import { addPost } from "../reducers/post";
 import useInput from "../hooks/useInput";
 
 const PostForm = () => {
-  const { imagePaths, addPostDone } = useSelector((state: RootState) => state.post);
   const dispatch = useDispatch();
-
   const [text, setText] = useState("");
+  const { imagePaths, addPostDone } = useSelector((state: RootState) => state.post);
 
   const onChangeText = useCallback((e) => {
-    console.log(e.target.value);
     setText(e.target.value);
   }, []);
 

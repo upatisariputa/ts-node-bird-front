@@ -15,6 +15,12 @@ export const initialState: userInitialStateProps = {
   changeNicknameLoading: false,
   changeNicknameDone: false,
   changeNicknameError: null,
+  followLoading: false,
+  followDone: false,
+  followError: null,
+  unFollowLoading: false,
+  unFollowDone: false,
+  unFollowError: null,
   me: null,
   signUpData: {},
   logInData: {},
@@ -148,6 +154,36 @@ const reducer = (state: userInitialStateProps = initialState, action) => {
       //   ...state.me,
       //   Posts: state.me.Posts.filter((v) => v.id !== action.data),
       // },
+      // 팔로우
+      case FOLLOW_REQUEST:
+        draft.followLoading = true;
+        draft.followDone = false;
+        draft.followError = null;
+        break;
+      case FOLLOW_SUCCESS:
+        draft.followLoading = false;
+        draft.me.Followings.push({ id: action.data });
+        draft.followDone = true;
+        break;
+      case FOLLOW_FAILURE:
+        draft.followLoading = false;
+        draft.followError = action.error;
+        break;
+      // 언팔
+      case UN_FOLLOW_REQUEST:
+        draft.unFollowLoading = true;
+        draft.unFollowDone = false;
+        draft.unFollowError = null;
+        break;
+      case UN_FOLLOW_SUCCESS:
+        draft.unFollowLoading = false;
+        draft.me.Followings = draft.me.Followings.filter((v) => v.id !== action.data);
+        draft.unFollowDone = true;
+        break;
+      case UN_FOLLOW_FAILURE:
+        draft.unFollowLoading = false;
+        draft.unFollowError = action.error;
+        break;
       default:
         break;
     }

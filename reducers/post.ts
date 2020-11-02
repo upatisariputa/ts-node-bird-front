@@ -1,40 +1,15 @@
 import shortId from "shortid";
 import produce from "immer";
+import faker from "faker";
+import { postProps } from "../@types";
 
 export const initialState = {
-  mainPosts: [
-    {
-      id: 1,
-      User: {
-        id: 1,
-        nickname: "Mina",
-      },
-      content: "First comment #Hash #potato",
-      Images: [
-        { id: shortId.generate(), src: "http://postfiles8.naver.net/MjAxNzA0MzBfMjA0/MDAxNDkzNTYwODExNTg2.KyMXgiIveMj03hNVXHqCalQq1hJmGSTPWblOTPv37mUg.nb7HVsmnAHX5LmyVEbKggDvd4lnoq0ImK4NcFbwiURYg.JPEG.djadbwls32/resized_20160819_203247_-1630600415.jpg?type=w2" },
-        { id: shortId.generate(), src: "http://postfiles9.naver.net/MjAxNzA0MzBfMjEx/MDAxNDkzNTYwODExNTky.xnXbM8XDvNC21ilkUeoMqLCpM4aIIvm6sNhEF2vNqG0g.Y6VSfHYkqNnqhb4x2IhBgytkdLEJwzC30yO6gAZA2WAg.JPEG.djadbwls32/resized_20160819_203248_-1361446025.jpg?type=w2" },
-        { id: shortId.generate(), src: "http://img.theqoo.net/img/ZktRl.jpg" },
-      ],
-      Comments: [
-        {
-          id: shortId.generate(),
-          User: {
-            id: shortId.generate(),
-            nickname: "sana",
-          },
-          content: "Twice!!",
-        },
-        {
-          User: {
-            id: shortId.generate(),
-            nickname: "chaeyong",
-          },
-          content: "Uh heong!",
-        },
-      ],
-    },
-  ],
+  mainPosts: [],
   imagePaths: [],
+  hasMorePosts: true,
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: null,
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
@@ -45,6 +20,36 @@ export const initialState = {
   addCommentDone: false,
   addCommentError: null,
 };
+
+export const generateDummyPost = (number: number) =>
+  Array(number)
+    .fill(null)
+    .map(() => ({
+      id: shortId.generate(),
+      User: {
+        id: shortId.generate(),
+        nickname: faker.name.findName(),
+      },
+      content: faker.lorem.paragraph(),
+      Images: [
+        {
+          src: faker.image.image(),
+        },
+      ],
+      Comments: [
+        {
+          User: {
+            id: shortId.generate(),
+            nickname: faker.name.findName(),
+          },
+          content: faker.lorem.sentence(),
+        },
+      ],
+    }));
+
+export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
+export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
+export const LOAD_POSTS_FAILURE = "LOAD_POSTS_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -70,10 +75,40 @@ export const addComment = (data) => ({
 
 const dummyPost = (data) => ({
   id: data.id,
+  User: {
+    id: shortId.generate(),
+    nickname: faker.name.findName(),
+  },
   content: data.content,
-  User: { id: 1, nickname: "mina" },
-  Images: [],
-  Comments: [],
+  Images: [
+    {
+      id: shortId.generate(),
+      src: faker.image.imageUrl(),
+    },
+  ],
+  Comments: [
+    {
+      User: {
+        id: shortId.generate(),
+        nickname: faker.name.findName(),
+      },
+      content: faker.lorem.sentence(),
+    },
+  ],
+
+  // id: data.id,
+  // content: data.content,
+  // User: { id: 1, nickname: "mina" },
+  // Images: [{ id: shortId.generate(), src: faker.image.imageUrl() }],
+  // Comments: [
+  //   {
+  //     User: {
+  //       id: shortId.generate(),
+  //       nickname: faker.name.findName(),
+  //     },
+  //     content: faker.lorem.sentence(),
+  //   },
+  // ],
 });
 
 const dummyComment = (data) => ({
@@ -87,7 +122,25 @@ const reducer = (state = initialState, action) => {
   console.log("리듀서 액션", action);
   return produce(state, (draft) => {
     // immer가 알아서 불변성을 지켜줌
+
     switch (action.type) {
+      // load post
+      case LOAD_POSTS_REQUEST:
+        draft.loadPostsLoading = true;
+        draft.loadPostsDone = false;
+        draft.loadPostsError = null;
+        break;
+      case LOAD_POSTS_SUCCESS:
+        draft.loadPostsLoading = false;
+        draft.loadPostsDone = true;
+        // draft.mainPosts = action.data.concat(draft.mainPosts);
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        draft.hasMorePosts = draft.mainPosts.length < 50;
+        break;
+      case LOAD_POSTS_FAILURE:
+        draft.loadPostsLoading = false;
+        draft.loadPostsError = action.error;
+        break;
       // add post
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
@@ -100,7 +153,8 @@ const reducer = (state = initialState, action) => {
         draft.mainPosts.unshift(dummyPost(action.data));
         break;
       case ADD_POST_FAILURE:
-        (draft.addPostLoading = false), (draft.addPostError = action.error);
+        draft.addPostLoading = false;
+        draft.addPostError = action.error;
         break;
       // remove post
       case REMOVE_POST_REQUEST:
@@ -149,6 +203,7 @@ const reducer = (state = initialState, action) => {
       default:
         break;
     }
+    console.log("사가 드래프트 매인포스트", draft.mainPosts);
   });
 };
 

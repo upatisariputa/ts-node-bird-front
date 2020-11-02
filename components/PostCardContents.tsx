@@ -4,7 +4,6 @@ import Link from "next/link";
 interface Props {}
 
 const PostCardContents = ({ postData }) => {
-  console.log(postData);
   return (
     <>
       <div>

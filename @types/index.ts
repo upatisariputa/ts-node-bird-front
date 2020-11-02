@@ -23,6 +23,12 @@ export interface userInitialStateProps {
   changeNicknameLoading: boolean;
   changeNicknameDone: boolean;
   changeNicknameError: object | null;
+  followLoading: boolean;
+  followDone: boolean;
+  followError: object | null;
+  unFollowLoading: boolean;
+  unFollowDone: boolean;
+  unFollowError: object | null;
   signUpData: {};
   logInData: {};
 }

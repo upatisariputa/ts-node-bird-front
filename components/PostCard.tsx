@@ -11,6 +11,7 @@ import CommentForm from "../components/CommentForm";
 import PostCardContents from "../components/PostCardContents";
 import { postProps } from "../@types";
 import { REMOVE_POST_REQUEST } from "../reducers/post";
+import FollowButton from "./FollowButton";
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -47,7 +48,6 @@ const PostCard = ({ post }) => {
             key="more"
             content={
               <Button.Group>
-                {console.log("포스트카드 유저아이디", post.User.id)}
                 {id && post.User.id === id ? (
                   <>
                     <Button>Edit</Button>
@@ -62,9 +62,9 @@ const PostCard = ({ post }) => {
             }>
             <EllipsisOutlined />
           </Popover>,
-        ]}>
-        {console.log("포스트", post)}
-        <Card.Meta avatar={<Avatar>{post.User.nickname}</Avatar>} title={post.User.nickname} description={<PostCardContents postData={post.content} />} />
+        ]}
+        extra={id && <FollowButton post={post} />}>
+        <Card.Meta avatar={<Avatar>{post.User.nickname.slice(0, 4)}</Avatar>} title={post.User.nickname} description={<PostCardContents postData={post.content} />} />
       </Card>
       {commentFormOpend && (
         <div>
