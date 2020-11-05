@@ -3,6 +3,9 @@ import shortId from "shortid";
 import produce from "immer";
 
 export const initialState: userInitialStateProps = {
+  loadUserMyInfoLoading: false,
+  loadUserMyInfoDone: false,
+  loadUserMyInfoError: null,
   logInLoading: false,
   logInDone: false,
   logInError: null,
@@ -25,6 +28,10 @@ export const initialState: userInitialStateProps = {
   signUpData: {},
   logInData: {},
 };
+
+export const LOAD_MY_INFO_REQUEST = "LOAD_MY_INFO_REQUEST";
+export const LOAD_MY_INFO_FAILURE = "LOAD_MY_INFO_FAILURE";
+export const LOAD_MY_INFO_SUCCESS = "LOAD_MY_INFO_SUCCESS";
 
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
 export const LOG_IN_FAILURE = "LOG_IN_FAILURE";
@@ -79,6 +86,22 @@ const reducer = (state: userInitialStateProps = initialState, action) => {
   console.log("유저 리듀서 액션", action);
   return produce(state, (draft) => {
     switch (action.type) {
+      // 로그인 상태 확인
+      case LOAD_MY_INFO_REQUEST:
+        draft.loadUserMyInfoLoading = true;
+        draft.loadUserMyInfoDone = false;
+        draft.loadUserMyInfoError = null;
+        break;
+      case LOAD_MY_INFO_SUCCESS:
+        draft.loadUserMyInfoLoading = false;
+        draft.loadUserMyInfoDone = true;
+        draft.me = action.data;
+        break;
+      case LOAD_MY_INFO_FAILURE:
+        draft.loadUserMyInfoLoading = false;
+        draft.loadUserMyInfoDone = false;
+        draft.loadUserMyInfoError = action.error;
+        break;
       // 로그인
       case LOG_IN_REQUEST:
         draft.logInLoading = true;
@@ -88,7 +111,7 @@ const reducer = (state: userInitialStateProps = initialState, action) => {
       case LOG_IN_SUCCESS:
         draft.logInLoading = false;
         draft.logInDone = true;
-        draft.me = dummyUser(action.data);
+        draft.me = action.data;
         break;
       case LOG_IN_FAILURE:
         draft.logInLoading = false;

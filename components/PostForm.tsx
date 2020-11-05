@@ -4,9 +4,7 @@ import { Button, Form, Input } from "antd";
 
 import { RootState } from "../reducers";
 
-import { addPost } from "../reducers/post";
-
-import useInput from "../hooks/useInput";
+import { addPost, ADD_POST_REQUEST } from "../reducers/post";
 
 const PostForm = () => {
   const dispatch = useDispatch();
@@ -24,7 +22,10 @@ const PostForm = () => {
   }, [addPostDone]);
 
   const onSubmit = useCallback(() => {
-    dispatch(addPost(text));
+    dispatch({
+      type: ADD_POST_REQUEST,
+      data: { content: text },
+    });
   }, [text]);
 
   const imageInput = useRef<HTMLInputElement>(null);

@@ -12,7 +12,6 @@ const UserProfile = () => {
     dispatch(logoutReqeustAction());
   }, []);
 
-  console.log("미", me);
   return (
     <Card
       actions={[
@@ -29,7 +28,7 @@ const UserProfile = () => {
           <br /> {me.Followers.length}
         </div>,
       ]}>
-      <Card.Meta avatar={<Avatar>Mina</Avatar>} title="Mina" />
+      <Card.Meta avatar={<Avatar>{me.nickname.slice(0, 2)}</Avatar>} title={me.nickname} />
       <Button onClick={onLogOut}>LogOut</Button>
     </Card>
   );

@@ -9,7 +9,6 @@ import { postProps } from "../@types";
 import { ADD_COMMENT_REQUEST } from "../reducers/post";
 
 const CommentForm = ({ post }) => {
-  console.log("콘텐츠폼", post);
   const dispatch = useDispatch();
 
   const id = useSelector((state: RootState) => state.user.me?.id);

@@ -10,6 +10,9 @@ export interface postProps {
 }
 
 export interface userInitialStateProps {
+  loadUserMyInfoLoading: boolean;
+  loadUserMyInfoDone: boolean;
+  loadUserMyInfoError: object | null;
   logInLoading: boolean;
   logInDone: boolean;
   logInError: object | null;

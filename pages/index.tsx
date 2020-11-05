@@ -5,6 +5,7 @@ import { RootState } from "../reducers";
 import PostForm from "../components/PostForm";
 import PostCard from "../components/PostCard";
 import { LOAD_POSTS_REQUEST } from "../reducers/post";
+import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -19,8 +20,16 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    dispatch({
+      type: LOAD_MY_INFO_REQUEST,
+    });
+    dispatch({
+      type: LOAD_POSTS_REQUEST,
+    });
+  }, []);
+
+  useEffect(() => {
     function onScroll() {
-      console.log(window.scrollY, document.documentElement.clientHeight, document.documentElement.scrollHeight);
       if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
         if (hasMorePosts && !loadPostsLoading) {
           dispatch({
