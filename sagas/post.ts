@@ -48,25 +48,25 @@ function* addPost(action) {
 }
 
 function removePostAPI(data) {
-  // return axios.delete("/post/", data, {
-  //   withCredentials: true,
-  // });
+  return axios.delete(`/post/${data}`);
 }
 
 function* removePost(action) {
   try {
-    yield call(removePostAPI, action.data);
+    const result = yield call(removePostAPI, action.data);
     yield put({
       type: REMOVE_POST_SUCCESS,
+      data: result.data,
     });
     yield put({
       type: REMOVE_POST_OF_ME,
       data: action.data,
     });
-  } catch (e) {
+  } catch (err) {
+    console.error(err);
     yield put({
       type: REMOVE_POST_FAILURE,
-      error: e.response.data,
+      error: err.response.data,
     });
   }
 }

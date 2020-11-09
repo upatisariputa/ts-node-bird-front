@@ -32,6 +32,15 @@ export interface userInitialStateProps {
   unFollowLoading: boolean;
   unFollowDone: boolean;
   unFollowError: object | null;
+  loadFollowersLoading: boolean;
+  loadFollowersDone: boolean;
+  loadFollowersError: object | null;
+  loadFollowingsLoading: boolean;
+  loadFollowingsDone: boolean;
+  loadFollowingsError: object | null;
+  removeFollowerLoading: boolean;
+  removeFollowerDone: boolean;
+  removeFollowerError: object | null;
   signUpData: {};
   logInData: {};
 }

@@ -1,5 +1,5 @@
 import { meProps, userInitialStateProps } from "../@types";
-import shortId from "shortid";
+// import shortId from "shortid";
 import produce from "immer";
 
 export const initialState: userInitialStateProps = {
@@ -24,6 +24,15 @@ export const initialState: userInitialStateProps = {
   unFollowLoading: false,
   unFollowDone: false,
   unFollowError: null,
+  loadFollowersLoading: false,
+  loadFollowersDone: false,
+  loadFollowersError: null,
+  loadFollowingsLoading: false,
+  loadFollowingsDone: false,
+  loadFollowingsError: null,
+  removeFollowerLoading: false,
+  removeFollowerDone: false,
+  removeFollowerError: null,
   me: null,
   signUpData: {},
   logInData: {},
@@ -56,6 +65,18 @@ export const FOLLOW_FAILURE = "FOLLOW_FAILURE";
 export const UN_FOLLOW_REQUEST = "UN_FOLLOW_REQUEST";
 export const UN_FOLLOW_SUCCESS = "UN_FOLLOW_SUCCESS";
 export const UN_FOLLOW_FAILURE = "UN_FOLLOW_FAILURE";
+
+export const REMOVE_FOLLOWER_REQUEST = "REMOVE_FOLLOWER_REQUEST";
+export const REMOVE_FOLLOWER_SUCCESS = "REMOVE_FOLLOWER_SUCCESS";
+export const REMOVE_FOLLOWER_FAILURE = "REMOVE_FOLLOWER_FAILURE";
+
+export const LOAD_FOLLOWERS_REQUEST = "LOAD_FOLLOWERS_REQUEST";
+export const LOAD_FOLLOWERS_SUCCESS = "LOAD_FOLLOWERS_SUCCESS";
+export const LOAD_FOLLOWERS_FAILURE = "LOAD_FOLLOWERS_FAILURE";
+
+export const LOAD_FOLLOWINGS_REQUEST = "LOAD_FOLLOWINGS_REQUEST";
+export const LOAD_FOLLOWINGS_SUCCESS = "LOAD_FOLLOWINGS_SUCCESS";
+export const LOAD_FOLLOWINGS_FAILURE = "LOAD_FOLLOWINGS_FAILURE";
 
 export const ADD_POST_TO_ME = "ADD_POST_TO_ME";
 export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME";
@@ -142,7 +163,7 @@ const reducer = (state: userInitialStateProps = initialState, action) => {
       case CHANGE_NICKNAME_SUCCESS:
         draft.changeNicknameLoading = false;
         draft.changeNicknameDone = true;
-        draft.me = null;
+        draft.me.nickname = action.data.nickname;
         break;
       case CHANGE_NICKNAME_FAILURE:
         draft.changeNicknameLoading = false;
@@ -162,6 +183,81 @@ const reducer = (state: userInitialStateProps = initialState, action) => {
         draft.signUpLoading = false;
         draft.signUpError = action.error;
         break;
+      // 팔로우
+      case FOLLOW_REQUEST:
+        draft.followLoading = true;
+        draft.followDone = false;
+        draft.followError = null;
+        break;
+      case FOLLOW_SUCCESS:
+        draft.followLoading = false;
+        draft.me.Followings.push({ id: action.data.UserId });
+        draft.followDone = true;
+        break;
+      case FOLLOW_FAILURE:
+        draft.followLoading = false;
+        draft.followError = action.error;
+        break;
+      // 블럭
+      case REMOVE_FOLLOWER_REQUEST:
+        draft.removeFollowerLoading = true;
+        draft.removeFollowerDone = false;
+        draft.removeFollowerError = null;
+        break;
+      case REMOVE_FOLLOWER_SUCCESS:
+        draft.removeFollowerLoading = false;
+        draft.me.Followers = draft.me.Followers.filter((v) => v.id !== action.data.UserId);
+        draft.removeFollowerDone = true;
+        break;
+      case REMOVE_FOLLOWER_FAILURE:
+        draft.removeFollowerLoading = false;
+        draft.removeFollowerError = action.error;
+        break;
+      // 언팔
+      case UN_FOLLOW_REQUEST:
+        draft.unFollowLoading = true;
+        draft.unFollowDone = false;
+        draft.unFollowError = null;
+        break;
+      case UN_FOLLOW_SUCCESS:
+        draft.unFollowLoading = false;
+        draft.me.Followings = draft.me.Followings.filter((v) => v.id !== action.data.UserId);
+        draft.unFollowDone = true;
+        break;
+      case UN_FOLLOW_FAILURE:
+        draft.unFollowLoading = false;
+        draft.unFollowError = action.error;
+        break;
+      // 팔로워 로드
+      case LOAD_FOLLOWERS_REQUEST:
+        draft.loadFollowersLoading = true;
+        draft.loadFollowersDone = false;
+        draft.loadFollowersError = null;
+        break;
+      case LOAD_FOLLOWERS_SUCCESS:
+        draft.loadFollowersLoading = false;
+        draft.me.Followers = action.data;
+        draft.loadFollowersDone = true;
+        break;
+      case LOAD_FOLLOWERS_FAILURE:
+        draft.loadFollowersLoading = false;
+        draft.loadFollowersError = action.error;
+        break;
+      // 팔로잉 로드
+      case LOAD_FOLLOWINGS_REQUEST:
+        draft.loadFollowingsLoading = true;
+        draft.loadFollowingsDone = false;
+        draft.loadFollowingsError = null;
+        break;
+      case LOAD_FOLLOWINGS_SUCCESS:
+        draft.loadFollowingsLoading = false;
+        draft.me.Followings = action.data;
+        draft.loadFollowingsDone = true;
+        break;
+      case LOAD_FOLLOWINGS_FAILURE:
+        draft.loadFollowingsLoading = false;
+        draft.loadFollowingsError = action.error;
+        break;
       // 포스트 투미
       case ADD_POST_TO_ME:
         draft.me.Posts.unshift({ id: action.data });
@@ -177,36 +273,6 @@ const reducer = (state: userInitialStateProps = initialState, action) => {
       //   ...state.me,
       //   Posts: state.me.Posts.filter((v) => v.id !== action.data),
       // },
-      // 팔로우
-      case FOLLOW_REQUEST:
-        draft.followLoading = true;
-        draft.followDone = false;
-        draft.followError = null;
-        break;
-      case FOLLOW_SUCCESS:
-        draft.followLoading = false;
-        draft.me.Followings.push({ id: action.data });
-        draft.followDone = true;
-        break;
-      case FOLLOW_FAILURE:
-        draft.followLoading = false;
-        draft.followError = action.error;
-        break;
-      // 언팔
-      case UN_FOLLOW_REQUEST:
-        draft.unFollowLoading = true;
-        draft.unFollowDone = false;
-        draft.unFollowError = null;
-        break;
-      case UN_FOLLOW_SUCCESS:
-        draft.unFollowLoading = false;
-        draft.me.Followings = draft.me.Followings.filter((v) => v.id !== action.data);
-        draft.unFollowDone = true;
-        break;
-      case UN_FOLLOW_FAILURE:
-        draft.unFollowLoading = false;
-        draft.unFollowError = action.error;
-        break;
       default:
         break;
     }

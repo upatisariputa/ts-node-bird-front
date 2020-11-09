@@ -32,6 +32,24 @@ const Signup = () => {
     }
   }, [signUpDone, signUpError, me && me.id]);
 
+  // useEffect(() => {
+  //   if (me && me.id) {
+  //     Router.replace("/");
+  //   }
+  // }, [me && me.id]);
+
+  // useEffect(() => {
+  //   if (signUpDone) {
+  //     Router.replace("/");
+  //   }
+  // }, [signUpDone]);
+
+  // useEffect(() => {
+  //   if (signUpError) {
+  //     alert(signUpError);
+  //   }
+  // }, [signUpError]);
+
   const [passwordCheck, setPasswordCheck] = useState("");
   const [passwordError, setPasswordError] = useState(false);
 
