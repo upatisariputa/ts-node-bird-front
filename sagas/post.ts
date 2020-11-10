@@ -1,6 +1,6 @@
 import { all, call, delay, fork, put, takeLatest, throttle } from "redux-saga/effects";
 import axios, { AxiosResponse } from "axios";
-import { LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE, ADD_COMMENT_FAILURE, ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_POST_FAILURE, ADD_POST_REQUEST, ADD_POST_SUCCESS, LOAD_POSTS_REQUEST, REMOVE_POST_FAILURE, REMOVE_POST_REQUEST, REMOVE_POST_SUCCESS, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE } from "../reducers/post";
+import { LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE, ADD_COMMENT_FAILURE, ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_POST_FAILURE, ADD_POST_REQUEST, ADD_POST_SUCCESS, LOAD_POSTS_REQUEST, REMOVE_POST_FAILURE, REMOVE_POST_REQUEST, REMOVE_POST_SUCCESS, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_SUCCESS } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 import next from "next";
 // import shortId from "shortid";
@@ -25,10 +25,12 @@ function* loadPosts(action) {
 }
 
 function addPostAPI(data) {
+  console.log("애드포스트 api", data);
   return axios.post("/post", data);
 }
 
 function* addPost(action) {
+  console.log("애드포스트 액션 데이터", action.data);
   try {
     const result = yield call(addPostAPI, action.data);
     yield put({
@@ -131,6 +133,26 @@ function* unlikePost(action) {
   }
 }
 
+function uploadImagesAPI(data) {
+  return axios.post(`/post/images`, data);
+}
+
+function* uploadImages(action) {
+  try {
+    const result = yield call(uploadImagesAPI, action.data);
+    yield put({
+      type: UPLOAD_IMAGES_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    console.error(e);
+    yield put({
+      type: UPLOAD_IMAGES_FAILURE,
+      data: e.response,
+    });
+  }
+}
+
 function* watchLoadPosts() {
   yield throttle(2000, LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -155,6 +177,10 @@ function* watchUnlikePost() {
   yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
 }
 
+function* watchUploadImages() {
+  yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
+}
+
 export default function* postSaga() {
-  yield all([fork(watchLoadPosts), fork(watchAddPost), fork(watchAddComment), fork(watchRemovePost), fork(watchLikePost), fork(watchUnlikePost)]);
+  yield all([fork(watchLoadPosts), fork(watchAddPost), fork(watchAddComment), fork(watchRemovePost), fork(watchLikePost), fork(watchUnlikePost), fork(watchUploadImages)]);
 }

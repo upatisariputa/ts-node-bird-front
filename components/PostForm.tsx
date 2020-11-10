@@ -4,7 +4,7 @@ import { Button, Form, Input } from "antd";
 
 import { RootState } from "../reducers";
 
-import { addPost, ADD_POST_REQUEST } from "../reducers/post";
+import { ADD_POST_REQUEST, REMOVE_IMAGE, UPLOAD_IMAGES_REQUEST } from "../reducers/post";
 
 const PostForm = () => {
   const dispatch = useDispatch();
@@ -21,34 +21,66 @@ const PostForm = () => {
     }
   }, [addPostDone]);
 
-  const onSubmit = useCallback(() => {
+  const onSubmitForm = useCallback(() => {
+    if (!text || !text.trim()) {
+      alert("Please write a post");
+      return;
+    }
+    const formData = new FormData();
+    imagePaths.forEach((i) => {
+      formData.append("image", i);
+    });
+    formData.append("content", text);
     dispatch({
       type: ADD_POST_REQUEST,
-      data: { content: text },
+      data: formData,
     });
-  }, [text]);
+  }, [text, imagePaths]);
 
   const imageInput = useRef<HTMLInputElement>(null);
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
   }, [imageInput.current]);
 
+  const onChangeImages = useCallback((e) => {
+    console.log("images", e.target.files);
+    const imageFormData = new FormData();
+    [].forEach.call(e.target.files, (f) => {
+      imageFormData.append("image", f);
+    });
+    dispatch({
+      type: UPLOAD_IMAGES_REQUEST,
+      data: imageFormData,
+    });
+  }, []);
+
+  const onRemoveImage = useCallback(
+    (index) => () => {
+      dispatch({
+        type: REMOVE_IMAGE,
+        data: index,
+      });
+    },
+    []
+  );
+
+  console.log("이미지 패스", imagePaths);
   return (
-    <Form style={{ margin: "10px 0 20px" }} encType="multipart/form-data" onFinish={onSubmit}>
+    <Form style={{ margin: "10px 0 20px" }} encType="multipart/form-data" onFinish={onSubmitForm}>
       <Input.TextArea value={text} onChange={onChangeText} maxLength={140} placeholder="What's going on Twice!" />
       <div>
-        <input type="file" multiple hidden ref={imageInput} />
+        <input type="file" name="image" multiple hidden ref={imageInput} onChange={onChangeImages} />
         <Button onClick={onClickImageUpload}>Image Upload</Button>
         <Button type="primary" style={{ float: "right" }} htmlType="submit">
           Twitling Twit
         </Button>
       </div>
       <div>
-        {imagePaths.map((v) => (
+        {imagePaths.map((v, i) => (
           <div key={v} style={{ display: "inline-block" }}>
-            <img src={v} alt={v} style={{ width: "200px", height: "200px" }} />
+            <img src={`http://localhost:3065/${v}`} alt={v} style={{ width: "200px", height: "200px" }} />
             <div>
-              <Button>Delete</Button>
+              <Button onClick={onRemoveImage(i)}>Delete</Button>
             </div>
           </div>
         ))}
