@@ -19,6 +19,9 @@ export interface userInitialStateProps {
   logOutLoading: boolean;
   logOutDone: boolean;
   logOutError: object | null;
+  loadUserLoading: boolean;
+  loadUserDone: boolean;
+  loadUserError: object | null;
   signUpLoading: boolean;
   signUpDone: boolean;
   signUpError: object | null;
@@ -43,6 +46,7 @@ export interface userInitialStateProps {
   removeFollowerError: object | null;
   signUpData: {};
   logInData: {};
+  userInfo: object | null;
 }
 
 export type ImagePostProps = { src: string }[];

@@ -6,6 +6,9 @@ export const initialState: userInitialStateProps = {
   loadUserMyInfoLoading: false,
   loadUserMyInfoDone: false,
   loadUserMyInfoError: null,
+  loadUserLoading: false,
+  loadUserDone: false,
+  loadUserError: null,
   logInLoading: false,
   logInDone: false,
   logInError: null,
@@ -36,6 +39,7 @@ export const initialState: userInitialStateProps = {
   me: null,
   signUpData: {},
   logInData: {},
+  userInfo: null,
 };
 
 export const LOAD_MY_INFO_REQUEST = "LOAD_MY_INFO_REQUEST";
@@ -77,6 +81,10 @@ export const LOAD_FOLLOWERS_FAILURE = "LOAD_FOLLOWERS_FAILURE";
 export const LOAD_FOLLOWINGS_REQUEST = "LOAD_FOLLOWINGS_REQUEST";
 export const LOAD_FOLLOWINGS_SUCCESS = "LOAD_FOLLOWINGS_SUCCESS";
 export const LOAD_FOLLOWINGS_FAILURE = "LOAD_FOLLOWINGS_FAILURE";
+
+export const LOAD_USER_REQUEST = "LOAD_USER_REQUEST";
+export const LOAD_USER_FAILURE = "LOAD_USER_FAILURE";
+export const LOAD_USER_SUCCESS = "LOAD_USER_SUCCESS";
 
 export const ADD_POST_TO_ME = "ADD_POST_TO_ME";
 export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME";
@@ -258,6 +266,23 @@ const reducer = (state: userInitialStateProps = initialState, action) => {
         draft.loadFollowingsLoading = false;
         draft.loadFollowingsError = action.error;
         break;
+      // 로그인 상태 확인
+      case LOAD_USER_REQUEST:
+        draft.loadUserLoading = true;
+        draft.loadUserDone = false;
+        draft.loadUserError = null;
+        break;
+      case LOAD_USER_SUCCESS:
+        draft.loadUserLoading = false;
+        draft.loadUserDone = true;
+        draft.userInfo = action.data;
+        break;
+      case LOAD_USER_FAILURE:
+        draft.loadUserLoading = false;
+        draft.loadUserDone = false;
+        draft.loadUserError = action.error;
+        break;
+
       // 포스트 투미
       case ADD_POST_TO_ME:
         draft.me.Posts.unshift({ id: action.data });
