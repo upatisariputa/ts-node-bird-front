@@ -21,12 +21,6 @@ const Home = () => {
 
   useEffect(() => {
     dispatch({
-      type: LOAD_POSTS_REQUEST,
-    });
-  }, []);
-
-  useEffect(() => {
-    dispatch({
       type: LOAD_MY_INFO_REQUEST,
     });
     dispatch({
@@ -38,8 +32,10 @@ const Home = () => {
     function onScroll() {
       if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
         if (hasMorePosts && !loadPostsLoading) {
+          const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
+            lastId,
           });
         }
       }
@@ -49,7 +45,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [hasMorePosts, loadPostsLoading]);
+  }, [hasMorePosts, loadPostsLoading, mainPosts]);
 
   return (
     <AppLayout>

@@ -1,17 +1,16 @@
-import { all, call, delay, fork, put, takeLatest, throttle } from "redux-saga/effects";
-import axios, { AxiosResponse } from "axios";
+import { all, call, fork, put, takeLatest, throttle } from "redux-saga/effects";
+import axios from "axios";
 import { LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE, ADD_COMMENT_FAILURE, ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_POST_FAILURE, ADD_POST_REQUEST, ADD_POST_SUCCESS, LOAD_POSTS_REQUEST, REMOVE_POST_FAILURE, REMOVE_POST_REQUEST, REMOVE_POST_SUCCESS, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_SUCCESS, RETWEET_SUCCESS, RETWEET_FAILURE, RETWEET_REQUEST } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
-import next from "next";
 // import shortId from "shortid";
 
-function loadPostsAPI(data) {
-  return axios.get("/posts", data);
+function loadPostsAPI(lastId) {
+  return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 
 function* loadPosts(action) {
   try {
-    const result = yield call(loadPostsAPI, action.data);
+    const result = yield call(loadPostsAPI, action.lastId);
     yield put({
       type: LOAD_POSTS_SUCCESS,
       data: result.data,
@@ -25,12 +24,10 @@ function* loadPosts(action) {
 }
 
 function addPostAPI(data) {
-  console.log("애드포스트 api", data);
   return axios.post("/post", data);
 }
 
 function* addPost(action) {
-  console.log("애드포스트 액션 데이터", action.data);
   try {
     const result = yield call(addPostAPI, action.data);
     yield put({
