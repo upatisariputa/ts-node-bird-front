@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { Card, Popover, Button, Avatar, List, Comment } from "antd";
@@ -10,7 +10,7 @@ import PostImages from "../components/PostImages";
 import CommentForm from "../components/CommentForm";
 import PostCardContents from "../components/PostCardContents";
 import { postProps } from "../@types";
-import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST } from "../reducers/post";
+import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, RETWEET_REQUEST, UNLIKE_POST_REQUEST } from "../reducers/post";
 import FollowButton from "./FollowButton";
 
 const PostCard = ({ post }) => {
@@ -55,12 +55,22 @@ const PostCard = ({ post }) => {
 
   const liked = post.Likers.find((v) => v.id === id);
 
+  const onRetweet = useCallback(() => {
+    if (!id) {
+      return alert("You need to Log in");
+    }
+
+    return dispatch({
+      type: RETWEET_REQUEST,
+      data: post.id,
+    });
+  }, [id]);
   return (
     <div style={{ marginBottom: 10 }}>
       <Card
         cover={post.Images.length > 0 && <PostImages Images={post.Images} />}
         actions={[
-          <RetweetOutlined key="retweet" />,
+          <RetweetOutlined key="retweet" onClick={onRetweet} />,
           liked ? <HeartTwoTone key="heart" twoToneColor="#eb2f96" onClick={onUnlike} /> : <HeartOutlined key="heart" onClick={onLike} />,
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
@@ -82,8 +92,15 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
+        title={post.RetweetId && `${post.User.nickname} was retweeted`}
         extra={id && <FollowButton post={post} />}>
-        <Card.Meta avatar={<Avatar>{post.User.nickname.slice(0, 4)}</Avatar>} title={post.User.nickname} description={<PostCardContents postData={post.content} />} />
+        {post.RetweetId && post.Retweet ? (
+          <Card cover={post.Retweet.Images.length > 0 && <PostImages Images={post.Retweet.Images} />}>
+            <Card.Meta avatar={<Avatar>{post.Retweet.User.nickname.slice(0, 4)}</Avatar>} title={post.Retweet.User.nickname} description={<PostCardContents postData={post.Retweet.content} />} />
+          </Card>
+        ) : (
+          <Card.Meta avatar={<Avatar>{post.User.nickname.slice(0, 4)}</Avatar>} title={post.User.nickname} description={<PostCardContents postData={post.content} />} />
+        )}
       </Card>
       {commentFormOpend && (
         <div>

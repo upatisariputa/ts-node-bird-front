@@ -154,7 +154,7 @@ function* changeNickname(action) {
   } catch (e) {
     yield put({
       type: CHANGE_NICKNAME_FAILURE,
-      data: e.response.data,
+      error: e.response.data,
     });
   }
 }
@@ -173,7 +173,7 @@ function* followers(action) {
   } catch (e) {
     yield put({
       type: LOAD_FOLLOWERS_FAILURE,
-      data: e.response.data,
+      error: e.response.data,
     });
   }
 }
@@ -193,7 +193,7 @@ function* followings(action) {
   } catch (e) {
     yield put({
       type: LOAD_FOLLOWINGS_FAILURE,
-      data: e.response.data,
+      error: e.response.data,
     });
   }
 }
