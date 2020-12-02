@@ -12,6 +12,7 @@ import PostCardContents from "../components/PostCardContents";
 import { postProps } from "../@types";
 import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, RETWEET_REQUEST, UNLIKE_POST_REQUEST } from "../reducers/post";
 import FollowButton from "./FollowButton";
+import Link from "next/link";
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -96,10 +97,30 @@ const PostCard = ({ post }) => {
         extra={id && <FollowButton post={post} />}>
         {post.RetweetId && post.Retweet ? (
           <Card cover={post.Retweet.Images.length > 0 && <PostImages Images={post.Retweet.Images} />}>
-            <Card.Meta avatar={<Avatar>{post.Retweet.User.nickname.slice(0, 4)}</Avatar>} title={post.Retweet.User.nickname} description={<PostCardContents postData={post.Retweet.content} />} />
+            <Card.Meta
+              avatar={
+                <Link href={`/user/${post.Retweet.User.id}`} prefetch={false}>
+                  <a>
+                    <Avatar>{post.Retweet.User.nickname.slice(0, 4)}</Avatar>
+                  </a>
+                </Link>
+              }
+              title={post.Retweet.User.nickname}
+              description={<PostCardContents postData={post.Retweet.content} />}
+            />
           </Card>
         ) : (
-          <Card.Meta avatar={<Avatar>{post.User.nickname.slice(0, 4)}</Avatar>} title={post.User.nickname} description={<PostCardContents postData={post.content} />} />
+          <Card.Meta
+            avatar={
+              <Link href={`/user/${post.User.id}`} prefetch={false}>
+                <a>
+                  <Avatar>{post.User.nickname.slice(0, 4)}</Avatar>
+                </a>
+              </Link>
+            }
+            title={post.User.nickname}
+            description={<PostCardContents postData={post.content} />}
+          />
         )}
       </Card>
       {commentFormOpend && (
@@ -111,7 +132,15 @@ const PostCard = ({ post }) => {
             dataSource={post.Comments}
             renderItem={(item: postProps) => (
               <li>
-                <Comment author={item.User.nickname} avatar={<Avatar>{item.User.nickname[0]}</Avatar>} content={item.content} />
+                <Comment
+                  author={item.User.nickname}
+                  avatar={
+                    <Link href={`/user/${item.User.id}`} prefetch={false}>
+                      <Avatar>{item.User.nickname[0]}</Avatar>
+                    </Link>
+                  }
+                  content={item.content}
+                />
               </li>
             )}
           />

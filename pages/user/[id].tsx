@@ -61,10 +61,10 @@ const User = () => {
               </div>,
               <div key="following">
                 following <br />
-                {userInfo.Followings}
+                {userInfo.Followings.length}
               </div>,
               <div key="follower">
-                follower <br /> {userInfo.Followers}
+                follower <br /> {userInfo.Followers.length}
               </div>,
             ]}>
             <Card.Meta avatar={<Avatar>{userInfo.nickname[0]} </Avatar>} title={userInfo.nickname} />

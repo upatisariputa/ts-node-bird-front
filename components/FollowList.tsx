@@ -11,7 +11,7 @@ interface followListProps {
   nickname: string;
 }
 
-const FollowList = ({ header, data }: { header: string; data: followList }) => {
+function FollowList({ header, data, onClickMore, loading }: { header: string; data: followList; onClickMore: () => void; loading: boolean }) {
   const listStyle = useMemo(() => ({ marginBottom: 20 }), []);
   const loadMoreStyle = useMemo(() => ({ textAlign: "center", margin: "10px 0" }), []);
   const grid = useMemo(() => ({ guttur: 4, xs: 2, md: 3 }), []);
@@ -31,7 +31,6 @@ const FollowList = ({ header, data }: { header: string; data: followList }) => {
     });
   };
 
-  console.log("팔로리스트", data);
   return (
     <List
       style={listStyle}
@@ -40,7 +39,9 @@ const FollowList = ({ header, data }: { header: string; data: followList }) => {
       header={<div>{header}</div>}
       loadMore={
         <div style={{ textAlign: "center", margin: "10px 0" }}>
-          <Button>Read More</Button>
+          <Button onClick={onClickMore} loading={loading}>
+            Read More
+          </Button>
         </div>
       }
       bordered
@@ -54,6 +55,6 @@ const FollowList = ({ header, data }: { header: string; data: followList }) => {
       )}
     />
   );
-};
+}
 
 export default FollowList;
