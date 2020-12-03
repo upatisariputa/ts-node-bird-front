@@ -5,6 +5,7 @@ import { Button, Form, Input } from "antd";
 import { RootState } from "../reducers";
 
 import { ADD_POST_REQUEST, REMOVE_IMAGE, UPLOAD_IMAGES_REQUEST } from "../reducers/post";
+import { backURL } from "../config/config";
 
 const PostForm = () => {
   const dispatch = useDispatch();
@@ -78,7 +79,7 @@ const PostForm = () => {
       <div>
         {imagePaths.map((v, i) => (
           <div key={v} style={{ display: "inline-block" }}>
-            <img src={`http://localhost:3065/${v}`} alt={v} style={{ width: "200px", height: "200px" }} />
+            <img src={`${backURL}/${v}`} alt={v} style={{ width: "200px", height: "200px" }} />
             <div>
               <Button onClick={onRemoveImage(i)}>Delete</Button>
             </div>

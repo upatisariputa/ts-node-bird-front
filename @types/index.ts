@@ -5,7 +5,7 @@ export interface postProps {
     id: number;
     nickname: string;
   };
-  Images: any[];
+  Images: object[];
   Comments: any[];
 }
 

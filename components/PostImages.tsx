@@ -1,6 +1,7 @@
 import { PlusOutlined } from "@ant-design/icons";
 import React, { useCallback, useState } from "react";
 import { ImagePostProps } from "../@types";
+import { backURL } from "../config/config";
 import ImagesZoom from "./ImagesZoom";
 
 const PostImages = ({ Images }: { Images: ImagePostProps }) => {
@@ -25,7 +26,7 @@ const PostImages = ({ Images }: { Images: ImagePostProps }) => {
   if (Images.length === 1) {
     return (
       <>
-        <img src={`http://localhost:3065/${Images[0].src}`} alt={Images[0].src} onClick={onZoom} role="presentation" style={{ width: "40%" }} />
+        <img src={`${backURL}/${Images[0].src}`} alt={Images[0].src} onClick={onZoom} role="presentation" style={{ width: "40%" }} />
         {showImagesZoom && <ImagesZoom Images={Images} onClose={onClose} />}
       </>
     );
@@ -35,8 +36,8 @@ const PostImages = ({ Images }: { Images: ImagePostProps }) => {
     return (
       <>
         <div>
-          <img src={`http://localhost:3065/${Images[0].src}`} alt={Images[0].src} onClick={onZoom} role="presentation" style={{ width: "20%", display: "inline-block" }} />
-          <img src={`http://localhost:3065/${Images[1].src}`} alt={Images[1].src} onClick={onZoom} role="presentation" style={{ width: "20%", display: "inline-block" }} />
+          <img src={`${backURL}/${Images[0].src}`} alt={Images[0].src} onClick={onZoom} role="presentation" style={{ width: "20%", display: "inline-block" }} />
+          <img src={`${backURL}/${Images[1].src}`} alt={Images[1].src} onClick={onZoom} role="presentation" style={{ width: "20%", display: "inline-block" }} />
         </div>
       </>
     );
@@ -45,7 +46,7 @@ const PostImages = ({ Images }: { Images: ImagePostProps }) => {
   return (
     <>
       <div>
-        <img src={`http://localhost:3065/${Images[0].src}`} alt={Images[0].src} onClick={onZoom} role="presentation" style={{ width: "40%" }} />
+        <img src={`${backURL}/${Images[0].src}`} alt={Images[0].src} onClick={onZoom} role="presentation" style={{ width: "40%" }} />
         <div role="presentation" style={{ display: "inline-block", textAlign: "center", verticalAlign: "middle" }} onClick={onZoom}>
           <PlusOutlined />
           <br />

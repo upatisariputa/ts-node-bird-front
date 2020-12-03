@@ -10,6 +10,7 @@ import NicknameEditForm from "../components/NicknameEditForm";
 import { RootState } from "../reducers";
 import { LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST } from "../reducers/user";
 import axios from "axios";
+import { backURL } from "../config/config";
 
 const fetcher = (url) => axios.get(url, { withCredentials: true }).then((result) => result.data);
 
@@ -45,8 +46,8 @@ const Profile = () => {
   //   });
   // }, []);
 
-  const { data: followersData, error: followerError } = useSWR(`http://localhost:3065/user/followers?limit=${followersLimit}`, fetcher);
-  const { data: followingsData, error: followingError } = useSWR(`http://localhost:3065/user/followings?limit=${followingsLimit}`, fetcher);
+  const { data: followersData, error: followerError } = useSWR(`${backURL}/user/followers?limit=${followersLimit}`, fetcher);
+  const { data: followingsData, error: followingError } = useSWR(`${backURL}/user/followings?limit=${followingsLimit}`, fetcher);
   console.log(followersData, followingsData);
   if (followerError || followingError) {
     console.error(followerError, followingError);

@@ -12,6 +12,7 @@ import wrapper from "../../store/configureStore";
 import PostCard from "../../components/PostCard";
 import AppLayout from "../../components/AppLayout";
 import { RootState } from "../../reducers";
+import { backURL } from "../../config/config";
 
 const User = () => {
   const dispatch = useDispatch();
@@ -48,7 +49,7 @@ const User = () => {
             <meta property="og:title" content={`post of ${userInfo.nickname}`} />
             <meta property="og:description" content={`post of${userInfo.nickname}`} />
             <meta property="og:imgae" content={`http://localhost:3000/favicon.ico`} />
-            <meta property="og:url" content={`http://localhost:3000/user/${id}`} />
+            <meta property="og:url" content={`${backURL}/user/${id}`} />
           </Head>
         )}
         {userInfo && userInfo.id !== me?.id ? (
