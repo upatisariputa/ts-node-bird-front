@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import moment from "moment";
 
 import { Card, Popover, Button, Avatar, List, Comment } from "antd";
 import { EllipsisOutlined, HeartOutlined, HeartTwoTone, MessageOutlined, RetweetOutlined } from "@ant-design/icons";
@@ -13,6 +14,8 @@ import { postProps } from "../@types";
 import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, RETWEET_REQUEST, UNLIKE_POST_REQUEST } from "../reducers/post";
 import FollowButton from "./FollowButton";
 import Link from "next/link";
+
+moment.locale("ko");
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -66,6 +69,7 @@ const PostCard = ({ post }) => {
       data: post.id,
     });
   }, [id]);
+
   return (
     <div style={{ marginBottom: 10 }}>
       <Card
@@ -97,6 +101,7 @@ const PostCard = ({ post }) => {
         extra={id && <FollowButton post={post} />}>
         {post.RetweetId && post.Retweet ? (
           <Card cover={post.Retweet.Images.length > 0 && <PostImages Images={post.Retweet.Images} />}>
+            <div style={{ float: "right" }}>{moment(post.createdAt).format("YYYY.MM.DD")}</div>
             <Card.Meta
               avatar={
                 <Link href={`/user/${post.Retweet.User.id}`} prefetch={false}>
@@ -110,17 +115,20 @@ const PostCard = ({ post }) => {
             />
           </Card>
         ) : (
-          <Card.Meta
-            avatar={
-              <Link href={`/user/${post.User.id}`} prefetch={false}>
-                <a>
-                  <Avatar>{post.User.nickname.slice(0, 4)}</Avatar>
-                </a>
-              </Link>
-            }
-            title={post.User.nickname}
-            description={<PostCardContents postData={post.content} />}
-          />
+          <>
+            <div style={{ float: "right" }}>{moment(post.createdAt).format("YYYY.MM.DD")}</div>
+            <Card.Meta
+              avatar={
+                <Link href={`/user/${post.User.id}`} prefetch={false}>
+                  <a>
+                    <Avatar>{post.User.nickname.slice(0, 4)}</Avatar>
+                  </a>
+                </Link>
+              }
+              title={post.User.nickname}
+              description={<PostCardContents postData={post.content} />}
+            />
+          </>
         )}
       </Card>
       {commentFormOpend && (
